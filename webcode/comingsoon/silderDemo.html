@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<h2 class="w3-center">Manual Slideshow</h2>
+
+<div class="w3-content w3-display-container">
+<div class="mySlides1">
+  <img class="mySlides" src="https://manual.limesurvey.org/images/4/46/Custom_sliders_1.png" style="width:25%">
+  <img class="mySlides" src="http://developers.slidedeck.com/wp-content/themes/slidedeck/images/mega-skin-vertical-nav-large.jpg" style="width:25%">
+  <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1Zkf60sJ-JWQgYTxuHHqI_DLStJQ8iHR286SCvmJVH4kj1sMu" style="width:25%">
+  <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKekUc2W2Ds-Wtl62mhc1LFSora08eDuZmCuM3q2zjL8Kl3a3dfg" style="width:25%">
+</div>
+<div class="mySlides1">
+  
+  <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2eiFMPKKg6M4R0O5TSpyPFs-9Mf4wTsmJlsy7MN44DzM5BdDpkA" style="width:25%">
+ <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTrpcpUiz0riDaccNjfSD60yU--IvdunsjC9agRmxefl-yHjiXsQ" style="width:25%">
+  <img class="mySlides" src="https://manual.limesurvey.org/images/4/46/Custom_sliders_1.png" style="width:25%">
+</div>
+  <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+  <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+</div>
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+
+  var i;
+  var x = document.getElementsByClassName("mySlides1");
+  if (n > x.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
+}
+</script>
+
+</body>
+</html>

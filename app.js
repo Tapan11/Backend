@@ -1,8 +1,7 @@
 express=require("express");
 var app=express();
 var cookieParser=express("cookie-parser");
-// var mysql=require("mysql");
-mongoose = require('mongoose');
+var mysql=require("mysql");
 var connection=require("express-myconnection");
 
 var bodyParser=require("body-parser");
@@ -18,18 +17,13 @@ var dateTime = require('node-datetime');
 
 var Cryptr = require('cryptr'),  
  cryptr = new Cryptr('myTotalySecretKey');
-
-cryptLib = require('cryptlib');
-
-iv = "TravialistAppliecation"; //16 bytes = 128 bit 
-key = cryptLib.getHashSha256('travialistApp', 32); //32 bytes = 256 bits 
  
 mailemail = 'tapan.rawal@travialist.com';
 mailpass = 'Mindcrew@123';
 var imgurl = 'https://travialist.com/ImagesFiles/';
 var cityImages ='https://travialist.com/ImagesCity/';
 
- uniquecode = require('./routers/api/uniquecode/uniquecode');
+ uniquecode = require('./routers/api/uniquecode/uniquecode.js');
  var userregistration = require('./routers/api/userregistration/signup');
 
  
@@ -55,14 +49,7 @@ var poiReview=require("./routers/api/poiReview");
 
 var csvfileupload=require("./routers/api/csvfileupload/csvfileupload");
 
-
-
-
 var outlook = require("node-outlook");
-
-
-
-
 
 
 
@@ -152,19 +139,35 @@ app.get('/project7', function(req, res, next) {
 //mysql pools
 // New connection
 
-
-/* 
-mongoose.connect("mongodb://localhost:53306/?ext.ssh.server=localhost:53306&ext.ssh.username=sv1aGd6TYOmFDrfh&ext.ssh.password=7wtXpERuDt33YOl0"); */
-
-connectionOne=require("./routers/connection");
-
   
-/* Table schema all start*/
 
-tbsecret0001Two=require("./models/login");
+app.use(connection(mysql,{
+  host     : 'galera-service.service.consul',
+  user     : 'LsSPjH4I6eVg9TxL',
+  password : '5wmaaGNVN0UBOY5i',
+  database : 'CF_C4C7A359_CA23_4B71_84A5_C19EAB920FD0'
+ },'request'));
 
-/* Table schema all end */
 
+
+  /*
+app.use(connection(mysql,{
+  host     : 'localhost',
+  user     : 'LsSPjH4I6eVg9TxL',
+  password : '5wmaaGNVN0UBOY5i',
+  database : 'CF_C4C7A359_CA23_4B71_84A5_C19EAB920FD0',
+  port     : 63306
+ },'request'));
+*/
+
+ /*
+ app.use(connection(mysql,{
+  host     : 'localhost',
+  user     : 'root',
+  password : '',
+  database : 'travialistnewnew'
+ },'request'));
+   */
  app.use("/travialistApp/",index);
  app.use("/travialistAdmin/",admin);
  app.use("/poiOverview/",poi);
@@ -182,8 +185,8 @@ tbsecret0001Two=require("./models/login");
  app.use("/userregistration/",userregistration);
  app.use("/csvfileupload/",csvfileupload);
  
-app.listen(1338,function(){
+app.listen(1337,function(){
 
-	console.log("app is running 1338");
+	console.log("app is running 1337");
 })
 module.exports = app;
