@@ -1,59 +1,85 @@
 express=require("express");
-var app=express();
-var cookieParser=express("cookie-parser");
-var mysql=require("mysql");
-var connection=require("express-myconnection");
+ app=express();
+ cookieParser=express("cookie-parser");
+// var mysql=require("mysql");
+mongoose = require('mongoose');
+connection=require("express-myconnection");
 
-var bodyParser=require("body-parser");
-var asyncLoop = require('node-async-loop');
+bodyParser=require("body-parser");
+asyncLoop = require('node-async-loop');
 
-var multer  = require('multer');
+multer  = require('multer');
 
-var upload = multer({ dest: 'images/' })
+upload = multer({ dest: 'images/' })
 
-var nodemailer = require('nodemailer');
-var fs = require("fs"); 
-var dateTime = require('node-datetime');
+nodemailer = require('nodemailer');
+fs = require("fs"); 
+dateTime = require('node-datetime');
+
+
+request = require("request");
 
 var Cryptr = require('cryptr'),  
  cryptr = new Cryptr('myTotalySecretKey');
+
+cryptLib = require('cryptlib');
+
+iv = "TravialistAppliecation"; //16 bytes = 128 bit 
+key = cryptLib.getHashSha256('travialistApp', 32); //32 bytes = 256 bits 
  
 mailemail = 'tapan.rawal@travialist.com';
 mailpass = 'Mindcrew@123';
-var imgurl = 'https://travialist.com/ImagesFiles/';
-var cityImages ='https://travialist.com/ImagesCity/';
 
- uniquecode = require('./routers/api/uniquecode/uniquecode.js');
+imgurl = 'https://travialist.com/ImagesFiles/';
+cityImages ='https://travialist.com/ImagesCity/';
+
+router = express.Router();
+
+
+ uniquecode = require('./routers/api/uniquecode/uniquecode');
  var userregistration = require('./routers/api/userregistration/signup');
+/* var sygic=require("./routers/api/sygic"); */
+var scrapping=require("./routers/sygicscraping/scrapping");
+
+
+var poi=require("./routers/api/poi");
+var poiDetails=require("./routers/api/poiDetail");
+var poiArrivalguide=require("./routers/api/poiArrivalguide");
+
 
  
 mailfile = require('./routers/api/mail.js');
 
+/*
 
 var index=require("./routers/index");
 var admin=require("./routers/admin");
-var poi=require("./routers/api/poi");
+
+
+
 var subscribe=require("./routers/api/subscribe");
-var poiDetails=require("./routers/api/poiDetail");
-var poiArrivalguide=require("./routers/api/poiArrivalguide");
 var cityHome=require("./routers/api/cityHome");
 var categories=require("./routers/api/categories");
-var sygic=require("./routers/api/sygic");
 
-var bookmarkCity=require("./routers/api/bookmarkCity");  // city book mark
+ var bookmarkCity=require("./routers/api/bookmarkCity");  
 
-var cronScrappingfoursquaredata=require("./routers/api/cronScrappingfoursquaredata");
+ var cronScrappingfoursquaredata=require("./routers/api/cronScrappingfoursquaredata");
 var poiFeature=require("./routers/api/poiFeature");
 var cityDetail=require("./routers/api/cityDetail");
 var poiReview=require("./routers/api/poiReview");
 
 var csvfileupload=require("./routers/api/csvfileupload/csvfileupload");
+*/
+
+
+
 
 var outlook = require("node-outlook");
 
 
 
-var bodyParser = require("body-parser");
+
+
  app.use(bodyParser.json({limit: '500mb'}));
  
  app.use(bodyParser.urlencoded({ extended: true }));
@@ -115,78 +141,53 @@ app.get('/', function(req, res, next) {
 });
 
 
-/* app.get('/test', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/index.html");
-});
-app.get('/project4', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/project4.html");
-});
-app.get('/project2', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/project2.html");
-});
-app.get('/project3', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/project3.html");
-});
-app.get('/project5', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/project5.html");
-});
-app.get('/project6', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/project6.html");
-});
-app.get('/project7', function(req, res, next) {
-	res.sendFile(__dirname + "/routers/test/project7.html");
-}); */
-//mysql pools
 // New connection
 
+
+/* 
+mongoose.connect("mongodb://localhost:53306/?ext.ssh.server=localhost:53306&ext.ssh.username=sv1aGd6TYOmFDrfh&ext.ssh.password=7wtXpERuDt33YOl0"); */
+
+connectionOne=require("./routers/connection");
+
+  
+/* Table schema all start*/
+
+tbsecret0001Two=require("./models/login");
+tbsecret0002One=require("./models/countylisttbl");
+tblcitylist001=require("./models/citylist001");
+tbsecretSygicdatalist0002=require("./models/Sygicdatalist0002");
+
+/* Table schema all end */
+
+/* comment by tapan
+
+app.use("/travialistApp/",index);
+app.use("/travialistAdmin/",admin);
+app.use("/subscribeWEB/",subscribe);
+app.use("/city/",cityHome);
+app.use("/categories/",categories);
+app.use("/bookmark/",bookmarkCity);
+app.use("/cronScrappingfoursquaredata/",cronScrappingfoursquaredata); 
+app.use("/poiAddfeature/",poiFeature);
+app.use("/poiFoursquareApp/",cityDetail);
+app.use("/poiReviewAPI/",poiReview);
+app.use("/csvfileupload/",csvfileupload);
+  */
   
 
-app.use(connection(mysql,{
-  host     : 'galera-service.service.consul',
-  user     : 'LsSPjH4I6eVg9TxL',
-  password : '5wmaaGNVN0UBOY5i',
-  database : 'CF_C4C7A359_CA23_4B71_84A5_C19EAB920FD0'
- },'request'));
-
-
-
-  /*
-app.use(connection(mysql,{
-  host     : 'localhost',
-  user     : 'LsSPjH4I6eVg9TxL',
-  password : '5wmaaGNVN0UBOY5i',
-  database : 'CF_C4C7A359_CA23_4B71_84A5_C19EAB920FD0',
-  port     : 63306
- },'request'));
-*/
-
- /*
- app.use(connection(mysql,{
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'travialistnewnew'
- },'request'));
-   */
- app.use("/travialistApp/",index);
- app.use("/travialistAdmin/",admin);
- app.use("/poiOverview/",poi);
- app.use("/subscribeWEB/",subscribe);
- app.use("/poiDetailsApp/",poiDetails);
- app.use("/poiArrivalguide/",poiArrivalguide);
- app.use("/cronScrappingfoursquaredata/",cronScrappingfoursquaredata);
- app.use("/bookmark/",bookmarkCity);
- app.use("/city/",cityHome);
- app.use("/categories/",categories);
- app.use("/poiAddfeature/",poiFeature);
- app.use("/poiFoursquareApp/",cityDetail);
- app.use("/poiReviewAPI/",poiReview);
- app.use("/sygic/",sygic);
- app.use("/userregistration/",userregistration);
- app.use("/csvfileupload/",csvfileupload);
+app.use("/poiOverview/",poi);
+app.use("/poiDetailsApp/",poiDetails);
+app.use("/poiArrivalguide/",poiArrivalguide);
+/* app.use("/sygic/",sygic); */
+app.use("/userregistration/",userregistration);
+app.use("/scrapping/",scrapping);
  
-app.listen(1337,function(){
+ 
+ 
 
-	console.log("app is running 1337");
+ 
+app.listen(1338,function(){
+
+	console.log("app is running 1338");
 })
 module.exports = app;

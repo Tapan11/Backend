@@ -1,22 +1,22 @@
-var express = require("express");
+/* var express = require("express");
 var nodemailer = require('nodemailer');
 var fs = require("fs"); 
 var router = express.Router();
-/* GET home page. */
+
 var Cryptr = require('cryptr'),  
  cryptr = new Cryptr('myTotalySecretKey');
 
 var bodyParser = require("body-parser");
  
  router.use(bodyParser.json({limit: '500mb'}));
- router.use(bodyParser.urlencoded({ extended: true }));
+ router.use(bodyParser.urlencoded({ extended: true })); */
  
 
-var mailfile = require('./api/mail.js');
+/* var mailfile = require('./api/mail.js');
 
 var mailemail = 'tapan.rawal@travialist.com';
 var mailpass = 'Mindcrew@123';
-var imgurl = 'https://travialist.com/ImagesFiles/';
+var imgurl = 'https://travialist.com/ImagesFiles/'; */
 
 module.exports = router;
 

@@ -5,7 +5,6 @@ var router = express.Router();
 var Cryptr = require('cryptr'),  
  cryptr = new Cryptr('myTotalySecretKey');
 
- 
 router.get('/', function(req, res, next) {
 	res.sendFile(__dirname + "/webcode/map.html");
 });

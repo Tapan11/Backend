@@ -1,34 +1,40 @@
-var express = require("express");
-var nodemailer = require('nodemailer');
-var asyncLoop = require('node-async-loop');
-var fs = require("fs"); 
-var router = express.Router();
-/* GET home page. */
-var multer  = require('multer');
-var upload = multer({ dest: 'images/' })
-
-var bodyParser = require("body-parser");
-
- 
-router.use(bodyParser.json({limit: '500mb'}));
-router.use(bodyParser.urlencoded({ extended: true }));
-
-var dateTime = require('node-datetime');
-
-var Cryptr = require('cryptr'),  
- cryptr = new Cryptr('myTotalySecretKey');
 
 router.get('/', function(req, res, next) {
 	res.sendFile(__dirname + "/webcode/map.html");
 });
 
-var mailemail = 'tapan.rawal@travialist.com';
+/* var mailemail = 'tapan.rawal@travialist.com';
 var mailpass = 'Mindcrew@123';
 var imgurl = 'https://travialist.com/ImagesFiles/';
 var cityImages ='https://travialist.com/ImagesCity/';
-var PdfCity ='https://travialist.com/PdfCity/';
+var PdfCity ='https://travialist.com/PdfCity/'; */
 
 module.exports = router;
+
+/*----------------------------------------------------- List of county start--------------------------------------------------------------*/
+
+router.post('/listcountry',function(req,res,next){
+	var arr1 = [];
+	
+	try {
+		var data = {};
+		tbsecret0002One.findCountry(data, function(err, result) {
+			if (err) throw err;
+			if(result.length >0){
+				res.json({"status": "success","data":result,"message":"All Country List"});
+			}else{
+				res.json({"status": "success","data":[],"message":"Something went wrong!"});	
+			}
+		})
+	}catch (ex) {
+		console.error("Internal error:" + ex);
+		return next(ex);
+    }
+
+});
+
+/*----------------------------------------------------- List of county end--------------------------------------------------------------*/
+
 
 
 router.post('/listCity',function(req,res,next){
@@ -64,7 +70,7 @@ router.post('/listCity',function(req,res,next){
 						var arr1 = [];
 						var obj1={};
 						
-						var query = conn.query("select t.*,tt.EmergencyNumbers,ifnull(bookmark.bookmark,0) as citybookmark from (select a.id,a.name as countryName,a.CountryCode as CityName1,a.location,replace(c.image,'width=200&height=300','width=350&height=500')  as image,c.description,c.fullimage,c.headerimage,concat('"+PdfCity+"',a.pdf) as pdf from tbl_arrivalguides as a,tbl_arrivalguidesimages as c where a.name <> '' and c.arrivalId = a.id and  a.name ='"+reqObj.countryName+"' order by rand()) as t left join tbl_BookmarkCity as bookmark on(t.id=bookmark.arrivalID and bookmark.userID = '"+reqObj.userid+"') , tbl_ArrivalguidesPoi as tt where t.CityName1 = tt.iso group by t.id order by CityName1", function(err, result) {
+						var query = conn.query("select t.*,tt.EmergencyNumbers from (select a.id,a.name as countryName,a.CountryCode as CityName1,a.location,replace(c.image,'width=200&height=300','width=350&height=500')  as image,c.description,c.fullimage,c.headerimage,concat('PdfCity',a.pdf) as pdf from tbl_arrivalguides as a,tbl_arrivalguidesimages as c where a.name <> '' and c.arrivalId = a.id and  a.name in (select name from tbl_arrivalguides group by name) order by rand()) as t left join tbl_BookmarkCity as bookmark on(t.id=bookmark.arrivalID and bookmark.userID = '3') , tbl_ArrivalguidesPoi as tt where t.CityName1 = tt.iso group by t.id order by CityName1", function(err, result) {
 							if (!!err) {
 													console.error('SQL error: ', err);
 													return next(err);
@@ -162,73 +168,6 @@ router.post('/cityPoi',function(req,res,next){
 
 
 
-router.post('/listcountry',function(req,res,next){
-	var arr1 = [];
-	
-	try {
-		req.getConnection(function(err, conn) {
-            if (!!err) {
-                console.error('SQL Connection error: ', err);
-                return next(err);
-            } else {
-				var query = conn.query("select region from tbl_continentcountry where region <> 'null' group by region", function(err, result) {
-					if (!!err) {
-						console.error('SQL error: ', err);
-						return next(err);
-					}else{
-						
-							if(result.length >0){
-								var array1 = result;
-								var count1 = 0;
-								asyncLoop(array1, function (itemdata, next){
-									var array = [];
-									var obj1={};
-									array.push(itemdata.region);
-									if(array.length > 0){
-										asyncLoop(array, function (item, next){
-											var item = item;
-											var query = conn.query("select * from (select a.id,a.name as countyName,(select EmergencyNumbers from tbl_ArrivalguidesPoi where iso=a.CountryCode) as EmergencyNumbers,a.location,replace(c.image,'width=200&height=300','width=350&height=500') as image ,c.fullimage,c.headerimage,'"+item+"' as region from tbl_arrivalguides as a,tbl_arrivalguidesimages as c where a.name <> ''  and c.arrivalId = a.id and CName in (select region from tbl_continentcountry where region ='"+item+"')) as t group by t.countyName order by countyName", function(err, result) {
-												if (!!err) {
-													console.error('SQL error: ', err);
-													return next(err);
-												}else{
-													if(result.length > 0){
-														obj1.region = item;
-														obj1.country = result;
-														arr1.push(obj1);
-														next();
-													}else{
-														var arraycity= [];
-														obj1.region = item;
-														obj1.country = arraycity;
-														arr1.push(obj1);
-														next();
-													}
-												}
-											});
-											 
-										}, function (err)
-										{
-											next();
-										});
-									}
-								}, function (err)
-										{
-											res.json({"status": "success","data":arr1,"message":"All Country List"});
-										});
-							}else{
-								res.json({"status": "error","error_type":"Country List","message":"Country List not available."});
-							}
-						}
-				   });
-			}
-        });
-	}catch (ex) {
-		console.error("Internal error:" + ex);
-		return next(ex);
-    }
-
-});
 
 
 
