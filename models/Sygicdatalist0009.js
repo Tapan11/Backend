@@ -93,14 +93,14 @@ tbScrtscitylist0004 = mongoose.Schema({
 			}
 		});
 		
-		var tbsecretSygicdatalist0002 = module.exports = connectionOne.model('tbl_sygicdatanew_0011', tbScrtscitylist0004);
+		var tbsecretSygicdatalist0009 = module.exports = connectionOne.model('tbl_sygicdatanew_0009', tbScrtscitylist0004);
 		/* module.exports.findCity = function(user, callback){ 
 			tbsecretSygicdatalist0002.create(user, callback);
 			tbsecretSygicdatalist0002.find(user, callback);
 		} */
 		
 		module.exports.addSygicdata = function(user, callback){ 
-					tbsecretSygicdatalist0002.create(user, callback);
+					tbsecretSygicdatalist0009.create(user, callback);
 					///tbuser0001Two.create(user, callback);
 				}
 				/* db.tbl_sygicdata002.remove({}) */
@@ -109,7 +109,7 @@ tbScrtscitylist0004 = mongoose.Schema({
 								tbsecretSygicdatalist0002.drop();
 					///tbuser0001Two.create(user, callback);
 					}  */			
-module.exports = tbsecretSygicdatalist0002;   
+module.exports = tbsecretSygicdatalist0009;   
 
 
 

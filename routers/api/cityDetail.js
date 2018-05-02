@@ -23,7 +23,7 @@ router.post('/listcountry',function(req,res,next){
 			if(result.length >0){
 				res.json({"status": "success","data":result,"message":"All Country List"});
 			}else{
-				res.json({"status": "success","data":[],"message":"Something went wrong!"});	
+				res.json({"status": "error","message":"Something went wrong!"});	
 			}
 		})
 	}catch (ex) {
@@ -67,28 +67,26 @@ router.post('/listCity',function(req,res,next){
 						console.error('SQL Connection error: ', err);
 						return next(err);
 					} else {
-						var arr1 = [];
-						var obj1={};
 						
-						var query = conn.query("select t.*,tt.EmergencyNumbers from (select a.id,a.name as countryName,a.CountryCode as CityName1,a.location,replace(c.image,'width=200&height=300','width=350&height=500')  as image,c.description,c.fullimage,c.headerimage,concat('PdfCity',a.pdf) as pdf from tbl_arrivalguides as a,tbl_arrivalguidesimages as c where a.name <> '' and c.arrivalId = a.id and  a.name in (select name from tbl_arrivalguides group by name) order by rand()) as t left join tbl_BookmarkCity as bookmark on(t.id=bookmark.arrivalID and bookmark.userID = '3') , tbl_ArrivalguidesPoi as tt where t.CityName1 = tt.iso group by t.id order by CityName1", function(err, result) {
+						var query = conn.query("select t.*,tt.EmergencyNumbers,ifnull(bookmark.bookmark,0) as citybookmark from (select a.id,a.name as countryName,a.CountryCode as CityName1,a.location,replace(c.image,'width=200&height=300','width=350&height=500')  as image,c.description,c.fullimage,c.headerimage,a.pdf as pdf from tbl_arrivalguides as a,tbl_arrivalguidesimages as c where a.name <> '' and c.arrivalId = a.id and  a.name in(select name from tbl_arrivalguides group by name) order by rand()) as t left join tbl_BookmarkCity as bookmark on(t.id=bookmark.arrivalID and bookmark.userID = '3') , tbl_ArrivalguidesPoi as tt where t.CityName1 = tt.iso group by t.id order by CityName1", function(err, result) {
 							if (!!err) {
-													console.error('SQL error: ', err);
-													return next(err);
-												}else{
-													if(result.length > 0){
-														
-														obj1.country = reqObj.countryName;
-														obj1.city = result;
-														arr1.push(obj1);
-														res.json({"status": "success","data":arr1,"message":"city data"});
-													}else{
-														var arraycity= [];
-														obj1.country = reqObj.countryName;
-														obj1.city = arraycity;
-														arr1.push(obj1);
-														res.json({"status": "error","data":arr1,"message":"city data not found"});
-													}
-												}
+									console.error('SQL error: ', err);
+									return next(err);
+								}else{
+									
+									if(result.length > 0){
+										/* obj1.country = reqObj.countryName;
+										obj1.city = result;
+										 */
+										tblcitylistAdd001.findCitylist(data,function(err, result) {
+											if (err== null){
+												res.json({"status": "success","message":"Comment add successfuly."});
+											}else{
+												res.json({"status": "error","message":"Comment is not add"});
+											}
+										});
+									}
+								}
 						   });
 					}
 				});
