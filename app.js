@@ -1,7 +1,9 @@
 express=require("express");
- app=express();
- cookieParser=express("cookie-parser");
-// var mysql=require("mysql");
+app=express();
+cookieParser=express("cookie-parser");
+
+mysql=require("mysql");
+
 mongoose = require('mongoose');
 connection=require("express-myconnection");
 
@@ -35,16 +37,20 @@ cityImages ='https://travialist.com/ImagesCity/';
 
 router = express.Router();
 
-
- uniquecode = require('./routers/api/uniquecode/uniquecode');
+uniquecode = require('./routers/api/uniquecode/uniquecode');
  var userregistration = require('./routers/api/userregistration/signup');
 /* var sygic=require("./routers/api/sygic"); */
 var scrapping=require("./routers/sygicscraping/scrapping");
+var cityheighlight=require("./routers/sygicscraping/cityheighlight");
+var question=require("./routers/questionaddrating/questionarating");
 
+var cityDetail=require("./routers/api/cityDetail");
+var commentadd=require("./routers/comment/comment");
 
+/* 
 var poi=require("./routers/api/poi");
 var poiDetails=require("./routers/api/poiDetail");
-var poiArrivalguide=require("./routers/api/poiArrivalguide");
+var poiArrivalguide=require("./routers/api/poiArrivalguide"); */
 
 
  
@@ -85,7 +91,6 @@ var outlook = require("node-outlook");
  app.use(bodyParser.urlencoded({ extended: true }));
  
 
- 
 
  
  app.use(function (req, res, next) {
@@ -103,51 +108,25 @@ var outlook = require("node-outlook");
     next();
 });
 
-
-app.use("/ImagesFiles",express.static(__dirname +"/routers/images"));
-app.use("/ImagesCity",express.static(__dirname +"/routers/ImageCity"));
-app.use("/sygictext",express.static(__dirname +"/routers/api"));
-app.use("/PdfCity",express.static(__dirname +"/routers/PdfCity"));
-/* app.use("/commonDesign",express.static(__dirname +"/routers/test/")); */
-
-
-
-app.use("/angularJSfile",express.static(__dirname +"/routers/webadmin/bower_components/angular/"));
-/* app.use("/angularJS",express.static(__dirname +"/webcode/comingsoon/angularJS/")); */
-
-app.use("/commonfile",express.static(__dirname +"/webcode/comingsoon"));
-// app.use("/comingsoonJS",express.static(__dirname +"/webcode/comingsoon/commonJS/"));
-
-
-
-
-/* app.use("/js",express.static(__dirname +"/webcode/comingsoon/js/"));
-app.use("/vendor",express.static(__dirname +"/webcode/comingsoon/vendor/jquery-easing/"));
-app.use("/jquery",express.static(__dirname +"/webcode/comingsoon/vendor/jquery/")); */
-/* app.use("/vendorBjs",express.static(__dirname +"/webcode/comingsoon/vendor/bootstrap/js/")); */
-/* app.use("/css",express.static(__dirname +"/webcode/comingsoon/css/"));
-app.use("/cssV",express.static(__dirname +"/webcode/comingsoon/vendor/bootstrap/css/"));
-*/
-app.use("/img",express.static(__dirname +"/webcode/comingsoon/img/")); 
-app.use("/",express.static(__dirname +"/webcode/comingsoon/"));
-
-									
-												
-
-	
-
-app.get('/', function(req, res, next) {
-	res.sendFile(__dirname + "/webcode/comingsoon/index.html");
-});
-
-
-// New connection
-
-
-/* 
-mongoose.connect("mongodb://localhost:53306/?ext.ssh.server=localhost:53306&ext.ssh.username=sv1aGd6TYOmFDrfh&ext.ssh.password=7wtXpERuDt33YOl0"); */
-
 connectionOne=require("./routers/connection");
+/* connectionMysql=require("./routers/mysqlconnection"); */
+
+   
+app.use(connection(mysql,{
+  host     : 'galera-service.service.consul',
+  user     : 'LsSPjH4I6eVg9TxL',
+  password : '5wmaaGNVN0UBOY5i',
+  database : 'CF_C4C7A359_CA23_4B71_84A5_C19EAB920FD0'
+ },'request'));
+/*
+app.use(connection(mysql,{
+  host     : 'localhost',
+  user     : 'LsSPjH4I6eVg9TxL',
+  password : '5wmaaGNVN0UBOY5i',
+  database : 'CF_C4C7A359_CA23_4B71_84A5_C19EAB920FD0',
+  port     : 63306
+ },'request'));
+*/
 
   
 /* Table schema all start*/
@@ -157,32 +136,26 @@ tbsecret0002One=require("./models/countylisttbl");
 tblcitylist001=require("./models/citylist001");
 tbsecretSygicdatalist0002=require("./models/Sygicdatalist0002");
 
-/* Table schema all end */
+tbsecretSygicdatalist0008=require("./models/Sygicdatalist0008");
+tbsecretSygicdatalist0009=require("./models/Sygicdatalist0009");
+tbsecretcitylistlist0001=require("./models/cityname001");
+countryList001=require("./models/country001");
+question0001=require("./models/question0001");
+questionAns0001=require("./models/questionans001");
+cityHeighliteList001=require("./models/cityHeighliteList001");
+tblcityshortdescription001=require("./models/tblcityshortdescription001");
+tblcityfulldescription001=require("./models/tblcityfulldescription001");
+tblcommentAdd001=require("./models/commentAdd001");
+tblcitylistAdd001=require("./models/tblcitylist001");
 
-/* comment by tapan
-
-app.use("/travialistApp/",index);
-app.use("/travialistAdmin/",admin);
-app.use("/subscribeWEB/",subscribe);
-app.use("/city/",cityHome);
-app.use("/categories/",categories);
-app.use("/bookmark/",bookmarkCity);
-app.use("/cronScrappingfoursquaredata/",cronScrappingfoursquaredata); 
-app.use("/poiAddfeature/",poiFeature);
-app.use("/poiFoursquareApp/",cityDetail);
-app.use("/poiReviewAPI/",poiReview);
-app.use("/csvfileupload/",csvfileupload);
-  */
-  
-
-app.use("/poiOverview/",poi);
-app.use("/poiDetailsApp/",poiDetails);
-app.use("/poiArrivalguide/",poiArrivalguide);
 /* app.use("/sygic/",sygic); */
 app.use("/userregistration/",userregistration);
 app.use("/scrapping/",scrapping);
+app.use("/question/",question);
+app.use("/cityheighlight/",cityheighlight);
  
- 
+app.use("/poiFoursquareApp/",cityDetail);
+app.use("/comment/",commentadd);
  
 
  
