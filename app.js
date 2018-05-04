@@ -147,6 +147,10 @@ tblcityshortdescription001=require("./models/tblcityshortdescription001");
 tblcityfulldescription001=require("./models/tblcityfulldescription001");
 tblcommentAdd001=require("./models/commentAdd001");
 tblcitylistAdd001=require("./models/tblcitylist001");
+tblbookmarkcity001=require("./models/tblbookmarkcity001");
+
+
+
 
 /* app.use("/sygic/",sygic); */
 app.use("/userregistration/",userregistration);

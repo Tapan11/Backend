@@ -24,8 +24,9 @@ tbScrts0001tbl = mongoose.Schema({
 				module.exports.addCitylist = function(user, callback){ 
 					tblcitylist001.create(user, callback);
 				}
-				module.exports.findcity = function(user, callback){ 
-				tblcitylist001.aggregate([
+				module.exports.findcity = function(user, callback){
+				tblcitylist001.find(user, callback);	
+				/* tblcitylist001.aggregate([
 					{
 					 $match:{
 						"_id": ObjectId("5a65c0fefb09a59c5ffc0eab")
@@ -40,7 +41,7 @@ tbScrts0001tbl = mongoose.Schema({
 						 as: "inventory_docs"
 					   }
 				  }
-				]);
+				]); */
 					/* tblcitylist001.find(user, callback); */
 				}
 				

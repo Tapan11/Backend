@@ -54,7 +54,7 @@ router.post('/listCity',function(req,res,next){
 			var ex = "Internal error:Object country id is not defiend";
 			res.json({"status": "error","message":ex});
 			return next(ex);
-		}else if(reqObj.countryName == undefined || reqObj.countryName == ''){
+		}else if(typeof reqObj.countryName == 'undefined' || reqObj.countryName == undefined || reqObj.countryName == ''){
 			var ex = "Internal error:Object Country name is not defiend";
 			res.json({"status": "error","message":ex});
 			return next(ex);
@@ -67,27 +67,24 @@ router.post('/listCity',function(req,res,next){
 						console.error('SQL Connection error: ', err);
 						return next(err);
 					} else {
-						
-						var query = conn.query("select t.*,tt.EmergencyNumbers,ifnull(bookmark.bookmark,0) as citybookmark from (select a.id,a.name as countryName,a.CountryCode as CityName1,a.location,replace(c.image,'width=200&height=300','width=350&height=500')  as image,c.description,c.fullimage,c.headerimage,a.pdf as pdf from tbl_arrivalguides as a,tbl_arrivalguidesimages as c where a.name <> '' and c.arrivalId = a.id and  a.name in(select name from tbl_arrivalguides group by name) order by rand()) as t left join tbl_BookmarkCity as bookmark on(t.id=bookmark.arrivalID and bookmark.userID = '3') , tbl_ArrivalguidesPoi as tt where t.CityName1 = tt.iso group by t.id order by CityName1", function(err, result) {
-							if (!!err) {
-									console.error('SQL error: ', err);
-									return next(err);
-								}else{
+						var data = {countryName : reqObj.countryName}
+						tblcitylistAdd001.findcity(data, function(err, result) {
+							if(err){
+								console.error('SQL Connection error: ', err);
+								return next(err);
+							}else{
+								
+								tblbookmarkcity001.find(,function(err,resultbookmark){
 									
-									if(result.length > 0){
-										/* obj1.country = reqObj.countryName;
-										obj1.city = result;
-										 */
-										tblcitylistAdd001.findCitylist(data,function(err, result) {
-											if (err== null){
-												res.json({"status": "success","message":"Comment add successfuly."});
-											}else{
-												res.json({"status": "error","message":"Comment is not add"});
-											}
-										});
-									}
-								}
-						   });
+								});
+							}
+							
+						})
+						
+						
+						
+						
+						
 					}
 				});
 			}catch (ex) {
